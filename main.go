@@ -16,7 +16,7 @@ func main() {
 
 	N := 1000000
 	sqlc(conn, "create table if not exists t1(i int primary key) with (fillfactor = 10)")
-	sqlc(conn, "delete from t1")
+	sqlc(conn, "truncate t1")
 	sqlc(conn, "insert into t1 select generate_series(1,"+strconv.Itoa(N)+",1)")
 
 	concurrency := 7
@@ -25,21 +25,16 @@ func main() {
 		conc <- struct{}{}
 	}
 
+	go SelectTableForever()
+	go SelectTableForever()
+
 	start := time.Now()
 	for step := 0; step < 3; step++ {
 		for i := 0; i < 14; i++ {
 			token := <-conc
 			locali := uint(i)
 			go func() {
-				fmt.Println("start ", locali)
-				//mx.Lock()
-				//if tx, ok := txs[int(locali)]; ok {
-				//	tx.Commit(context.Background())
-				//	tx.Conn().Close(context.Background())
-				//}
 				tx := getTx()
-				//txs[i] = tx
-				//mx.Unlock()
 
 				list := make([]int, 0)
 				for n := 0; n < N; n++ {
@@ -59,7 +54,6 @@ func main() {
 
 	for i := 0; i < concurrency; i++ {
 		<-conc
-		fmt.Println("Done ", i)
 	}
 
 	fmt.Println("Test time ", time.Now().Sub(start))
@@ -109,6 +103,20 @@ func PingTransactionForever(t pgx.Tx) {
 	for {
 		time.Sleep(time.Second)
 		_, err := t.Query(ctx, "select 1")
+		if err != nil {
+			//fmt.Print(err)
+			return
+			//os.Exit(1)
+		}
+	}
+}
+
+func SelectTableForever() {
+	ctx := context.Background()
+	t := getTx()
+	for {
+		time.Sleep(time.Second)
+		_, err := t.Query(ctx, "select count(*) from t1 where i%2 = 1")
 		if err != nil {
 			//fmt.Print(err)
 			return
