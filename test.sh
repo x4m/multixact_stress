@@ -1,3 +1,4 @@
+echo "multixact_local_cache_entries = 256" >> ~/DemoDb/postgresql.conf
 
 echo "multixact_offsets_slru_buffers = 4096" >> ~/DemoDb/postgresql.conf
 echo "multixact_members_slru_buffers = 8192" >> ~/DemoDb/postgresql.conf

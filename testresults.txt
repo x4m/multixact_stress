@@ -79,3 +79,41 @@ Test time  1m46.162335701s
 Test time  1m52.530464334s
 4096, 8192
 Test time  3m30.761242783s
+
+Cache tests. Optimized locks with selects.
+256
+Test time  1m35.457184607s
+16
+Test time  1m28.394767411s
+32
+Test time  1m35.090747731s
+64
+Test time  1m28.886590781s
+128
+Test time  1m31.027109636s
+256
+Test time  1m29.906566173s
+512
+Test time  1m38.345378769s
+1024
+Test time  2m10.311852458s
+
+With selects and optimized locks, cache patch present but 256
+4096, 8192
+Test time  2m51.827921969s
+2, 4
+Test time  10m19.906310865s
+4, 8
+Test time  3m26.976212903s
+8, 16
+Test time  1m33.726941849s
+16, 32
+Test time  1m20.925479842s
+32, 64
+Test time  1m21.960255061s
+64, 128
+Test time  1m26.011486891s
+128, 256
+Test time  1m24.043057832s
+4096, 8192
+Test time  2m56.454942239s
